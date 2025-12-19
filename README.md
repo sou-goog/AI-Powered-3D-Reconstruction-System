@@ -308,8 +308,8 @@ MIT License - see LICENSE file for details
 
 <div align="center">
 
-**Made with AI & ❤️**
 
-⭐ Star this repo if you find it useful!
+
+
 
 </div>
