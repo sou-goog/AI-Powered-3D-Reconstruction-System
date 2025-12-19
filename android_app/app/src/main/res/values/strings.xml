@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Image to 3D</string>
+    
+    <!-- Upload Screen -->
+    <string name="upload_title">Upload Images</string>
+    <string name="select_images">Select Images</string>
+    <string name="upload_button">Generate 3D Model</string>
+    <string name="uploading">Uploading…</string>
+    <string name="processing">Processing…</string>
+    <string name="max_images_warning">Maximum 5 images allowed</string>
+    <string name="no_images_selected">Please select at least one image</string>
+    
+    <!-- Gallery Screen -->
+    <string name="gallery_title">Gallery</string>
+    <string name="no_models">No 3D models yet</string>
+    <string name="upload_first">Upload images to generate your first model</string>
+    <string name="delete_confirmation">Delete this model?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="load_more">Load More</string>
+    
+    <!-- Result Screen -->
+    <string name="result_title">3D Model Result</string>
+    <string name="preview">Preview</string>
+    <string name="downloads">Downloads</string>
+    <string name="download_obj">Download OBJ</string>
+    <string name="download_stl">Download STL</string>
+    <string name="download_video">Download Video</string>
+    <string name="downloading">Downloading…</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="open_file">Open File</string>
+    <string name="model_info">Model Information</string>
+    <string name="created_at">Created</string>
+    <string name="processing_time">Processing Time</string>
+    <string name="file_size">File Size</string>
+    
+    <!-- Common -->
+    <string name="error_occurred">An error occurred</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+    <string name="loading">Loading…</string>
+</resources>

@@ -1,0 +1,2 @@
+TripoSR.zip filter=lfs diff=lfs merge=lfs -text
+.u2net/u2net.onnx filter=lfs diff=lfs merge=lfs -text

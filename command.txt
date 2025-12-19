@@ -1,0 +1,6 @@
+!git clone https://github.com/pyimagesearch/TripoSR.git
+!pip install Pillow==9.5.0
+!pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu126
+%cd TripoSR
+!pip install -r requirements.txt -q
+!pip install onnxruntime timer

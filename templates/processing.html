@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Processing - 3D Reconstruction Studio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #0f172a;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --terminal-bg: #1a1a1a;
+            --terminal-text: #00ff00;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--dark-color);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .processing-container {
+            padding: 2rem;
+        }
+
+        .status-bar {
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .status-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-subtext {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .terminal-container {
+            background: var(--terminal-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-header {
+            background: #2d2d2d;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid #404040;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red {
+            background: #ff5f56;
+        }
+
+        .terminal-dot.yellow {
+            background: #ffbd2e;
+        }
+
+        .terminal-dot.green {
+            background: #27ca3f;
+        }
+
+        .terminal-title {
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+
+        .terminal-body {
+            background: var(--terminal-bg);
+            color: var(--terminal-text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #404040 #1a1a1a;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-body::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.25rem;
+            opacity: 0;
+            animation: fadeInUp 0.3s ease forwards;
+        }
+
+        .terminal-prompt {
+            color: #00ff00;
+        }
+
+        .terminal-timestamp {
+            color: #888888;
+        }
+
+        .terminal-message {
+            color: #ffffff;
+        }
+
+        .terminal-cursor {
+            background: var(--terminal-text);
+            animation: blink 1s infinite;
+            width: 10px;
+            height: 16px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .completion-actions {
+            display: none;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .completion-actions.show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+            border-width: 2px;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .btn-outline-secondary {
+            color: var(--secondary-color);
+            border-color: var(--border-color);
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .processing-container {
+                padding: 1.5rem;
+            }
+
+            .terminal-body {
+                height: 300px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-cogs me-3"></i>3D Model Processing</h1>
+            <div class="subtitle">AI-Powered 3D Generation in Progress</div>
+        </div>
+
+        <!-- Processing Content -->
+        <div class="processing-container">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-icon">
+                    <i class="fas fa-cogs" id="statusIcon"></i>
+                </div>
+                <div class="status-text" id="statusText">Initializing 3D Generation...</div>
+                <div class="status-subtext" id="statusSubtext">Please wait while we process your image</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <!-- Terminal -->
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-title">TripoSR Processing Terminal</div>
+                </div>
+                <div class="terminal-body" id="terminal">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">triposr@studio:~$</span>
+                        <span class="terminal-message">Starting 3D model generation...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Actions -->
+            <div class="completion-actions" id="completionActions">
+                <a href="#" class="btn btn-primary" id="viewResultBtn">
+                    <i class="fas fa-eye"></i>View 3D Model
+                </a>
+                <a href="/" class="btn btn-outline-secondary">
+                    <i class="fas fa-plus"></i>Create Another
+                </a>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <strong>Processing Error:</strong>
+                <span id="errorText"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sessionId = '{{ session_id }}';
+        const terminal = document.getElementById('terminal');
+        const statusIcon = document.getElementById('statusIcon');
+        const statusText = document.getElementById('statusText');
+        const statusSubtext = document.getElementById('statusSubtext');
+        const progressBar = document.getElementById('progressBar');
+        const completionActions = document.getElementById('completionActions');
+        const viewResultBtn = document.getElementById('viewResultBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        let progress = 0;
+        let lineCount = 1;
+
+        function addTerminalLine(message, timestamp) {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `
+                <span class="terminal-timestamp">[${timestamp}]</span>
+                <span class="terminal-prompt">triposr@studio:~$</span>
+                <span class="terminal-message">${message}</span>
+            `;
+
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+            lineCount++;
+
+            // Update progress based on key milestones
+            updateProgress(message);
+        }
+
+        function updateProgress(message) {
+            if (message.includes('Processing uploaded image')) {
+                progress = 10;
+                statusText.textContent = 'Processing Image...';
+                statusIcon.className = 'fas fa-image';
+            } else if (message.includes('Removing background')) {
+                progress = 20;
+                statusText.textContent = 'Removing Background...';
+                statusIcon.className = 'fas fa-scissors';
+            } else if (message.includes('Initializing AI neural network')) {
+                progress = 30;
+                statusText.textContent = 'Loading AI Model...';
+                statusIcon.className = 'fas fa-brain';
+            } else if (message.includes('Generating 3D scene codes')) {
+                progress = 50;
+                statusText.textContent = 'Generating 3D Scene...';
+                statusIcon.className = 'fas fa-cube';
+            } else if (message.includes('Starting 3D rendering')) {
+                progress = 70;
+                statusText.textContent = 'Rendering 3D Views...';
+                statusIcon.className = 'fas fa-video';
+            } else if (message.includes('Extracting 3D mesh')) {
+                progress = 90;
+                statusText.textContent = 'Creating 3D Model...';
+                statusIcon.className = 'fas fa-hammer';
+            } else if (message.includes('completed successfully')) {
+                progress = 100;
+                statusText.textContent = 'Generation Complete!';
+                statusIcon.className = 'fas fa-check-circle';
+                statusIcon.style.color = 'var(--success-color)';
+            }
+
+            progressBar.style.width = progress + '%';
+        }
+
+        function handleCompletion(data) {
+            if (data.status === 'completed') {
+                statusText.textContent = '🎉 3D Model Generated Successfully!';
+                statusSubtext.textContent = 'Your 3D model is ready to view';
+                statusIcon.className = 'fas fa-check-circle';
+                statusIcon.style.color = 'var(--success-color)';
+                progressBar.style.width = '100%';
+
+                viewResultBtn.href = `/result/${data.folder_id}`;
+                completionActions.classList.add('show');
+
+                // Add final terminal message
+                addTerminalLine(data.message, new Date().toLocaleTimeString());
+
+                // Auto-redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = `/result/${data.folder_id}`;
+                }, 3000);
+
+            } else if (data.status === 'error') {
+                statusText.textContent = 'Processing Failed';
+                statusSubtext.textContent = 'An error occurred during processing';
+                statusIcon.className = 'fas fa-exclamation-triangle';
+                statusIcon.style.color = 'var(--danger-color)';
+
+                errorText.textContent = data.message;
+                errorMessage.classList.add('show');
+
+                addTerminalLine(data.message, new Date().toLocaleTimeString());
+            }
+        }
+
+        // Connect to Server-Sent Events
+        const eventSource = new EventSource(`/progress/${sessionId}`);
+
+        // Add initial welcome message
+        addTerminalLine('🚀 Initializing TripoSR processing system...', new Date().toLocaleTimeString());
+        addTerminalLine('📡 Connecting to processing server...', new Date().toLocaleTimeString());
+
+        eventSource.onopen = function (event) {
+            addTerminalLine('✅ Connection established successfully', new Date().toLocaleTimeString());
+            addTerminalLine('⏳ Waiting for processing to begin...', new Date().toLocaleTimeString());
+        };
+
+        eventSource.onmessage = function (event) {
+            console.log('Received SSE data:', event.data); // Debug logging
+            const data = JSON.parse(event.data);
+
+            if (data.status) {
+                // Processing completion or error
+                handleCompletion(data);
+                eventSource.close();
+            } else if (data.message && !data.heartbeat) {
+                // Progress update
+                addTerminalLine(data.message, data.timestamp);
+            } else if (data.heartbeat) {
+                console.log('Heartbeat received'); // Debug logging
+            }
+        };
+
+        eventSource.onerror = function (event) {
+            console.error('EventSource failed:', event);
+            addTerminalLine('❌ Connection to server lost', new Date().toLocaleTimeString());
+            addTerminalLine('🔄 Attempting to reconnect...', new Date().toLocaleTimeString());
+        };
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function () {
+            eventSource.close();
+        });
+    </script>
+</body>
+
+</html>
