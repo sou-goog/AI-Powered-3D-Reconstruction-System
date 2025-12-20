@@ -1,132 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Processing - 3D Reconstruction Studio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --dark-color: #0f172a;
-            --light-bg: #f8fafc;
-            --white: #ffffff;
-            --border-color: #e2e8f0;
-            --terminal-bg: #1a1a1a;
-            --terminal-text: #00ff00;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --border-radius: 12px;
-            --border-radius-lg: 16px;
-        }
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #06b6d4;
+            --secondary: #10b981;
+            --accent: #3b82f6;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: var(--dark-color);
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: var(--white);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-xl);
-            overflow: hidden;
+        /* Animated background orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            animation: float 25s ease-in-out infinite;
+            z-index: 0;
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 2rem;
+        body::before {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary), var(--accent));
+            top: -250px;
+            left: -250px;
+        }
+
+        body::after {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--secondary), var(--primary));
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(40px, -40px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+        }
+
+        .container-main {
+            max-width: 1100px;
+            margin: 50px auto;
+            position: relative;
+            z-index: 1;
+            padding: 0 24px;
+        }
+
+        /* Premium glass card */
+        .glass-card {
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.12) 0%,
+                    rgba(255, 255, 255, 0.06) 100%);
+            backdrop-filter: blur(24px) saturate(190%);
+            border-radius: 36px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            padding: 48px;
+            box-shadow:
+                0 12px 40px 0 rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Header */
+        .header-main {
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 44px;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.2rem;
             font-weight: 700;
-            margin: 0;
-            position: relative;
-            z-index: 1;
+            line-height: 1.1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
 
-        .header .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
+        .subtitle {
+            font-size: 1.15rem;
+            color: #9ca3af;
             font-weight: 400;
-            position: relative;
-            z-index: 1;
         }
 
-        .processing-container {
-            padding: 2rem;
-        }
-
-        .status-bar {
-            background: var(--light-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+        /* Status Section */
+        .status-section {
+            background: linear-gradient(135deg,
+                    rgba(6, 182, 212, 0.08) 0%,
+                    rgba(16, 185, 129, 0.08) 100%);
+            border: 1.5px solid rgba(6, 182, 212, 0.3);
+            border-radius: 24px;
+            padding: 36px;
+            margin-bottom: 32px;
             text-align: center;
         }
 
         .status-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            animation: pulse 2s infinite;
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
         }
 
         .status-text {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
+            color: #f8fafc;
+            margin-bottom: 8px;
         }
 
         .status-subtext {
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
+            color: #94a3b8;
+            font-size: 1rem;
         }
 
-        .progress-bar-container {
-            background: #e2e8f0;
+        /* Progress Bar */
+        .progress-container {
+            margin: 28px 0;
+        }
+
+        .progress {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            height: 8px;
             overflow: hidden;
-            margin-bottom: 1rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .progress-bar {
-            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 10px;
+            transition: width 0.5s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
         }
 
         .progress-bar::before {
@@ -141,73 +205,70 @@
         }
 
         @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-
             100% {
                 left: 100%;
             }
         }
 
+        /* Terminal */
         .terminal-container {
-            background: var(--terminal-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
+            background: #0d1117;
+            border: 1.5px solid rgba(6, 182, 212, 0.25);
+            border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 2rem;
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .terminal-header {
-            background: #2d2d2d;
-            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg,
+                    rgba(6, 182, 212, 0.1) 0%,
+                    rgba(16, 185, 129, 0.1) 100%);
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            border-bottom: 1px solid #404040;
+            gap: 12px;
         }
 
         .terminal-dots {
             display: flex;
-            gap: 0.25rem;
+            gap: 8px;
         }
 
-        .terminal-dot {
+        .dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
 
-        .terminal-dot.red {
+        .dot-red {
             background: #ff5f56;
         }
 
-        .terminal-dot.yellow {
+        .dot-yellow {
             background: #ffbd2e;
         }
 
-        .terminal-dot.green {
-            background: #27ca3f;
+        .dot-green {
+            background: #27c93f;
         }
 
         .terminal-title {
-            color: #ffffff;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            margin-left: 1rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 500;
         }
 
         .terminal-body {
-            background: var(--terminal-bg);
-            color: var(--terminal-text);
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            line-height: 1.6;
-            padding: 1rem;
-            height: 400px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #404040 #1a1a1a;
+            line-height: 1.8;
         }
 
         .terminal-body::-webkit-scrollbar {
@@ -215,367 +276,309 @@
         }
 
         .terminal-body::-webkit-scrollbar-track {
-            background: #1a1a1a;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .terminal-body::-webkit-scrollbar-thumb {
-            background: #404040;
+            background: rgba(6, 182, 212, 0.3);
             border-radius: 4px;
         }
 
-        .terminal-line {
-            margin-bottom: 0.25rem;
-            opacity: 0;
-            animation: fadeInUp 0.3s ease forwards;
+        .terminal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(6, 182, 212, 0.5);
         }
 
-        .terminal-prompt {
-            color: #00ff00;
+        .terminal-line {
+            margin-bottom: 6px;
+            color: #22c55e;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
         }
 
         .terminal-timestamp {
-            color: #888888;
+            color: #64748b;
+            margin-right: 8px;
         }
 
-        .terminal-message {
-            color: #ffffff;
-        }
-
-        .terminal-cursor {
-            background: var(--terminal-text);
-            animation: blink 1s infinite;
-            width: 10px;
-            height: 16px;
-            display: inline-block;
-            margin-left: 5px;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.7;
-                transform: scale(1.05);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes blink {
-
-            0%,
-            50% {
-                opacity: 1;
-            }
-
-            51%,
-            100% {
-                opacity: 0;
-            }
-        }
-
-        .completion-actions {
+        /* Complete Section */
+        .complete-section {
             display: none;
             text-align: center;
-            gap: 1rem;
+            padding: 32px;
+            background: linear-gradient(135deg,
+                    rgba(16, 185, 129, 0.1) 0%,
+                    rgba(6, 182, 212, 0.1) 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.3);
+            border-radius: 24px;
+            margin-top: 32px;
         }
 
-        .completion-actions.show {
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn {
-            font-weight: 500;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.2s ease;
-            border-width: 2px;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            color: var(--white);
-        }
-
-        .btn-outline-secondary {
-            color: var(--secondary-color);
-            border-color: var(--border-color);
-            background: transparent;
-        }
-
-        .btn-outline-secondary:hover {
-            background: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: var(--white);
-        }
-
-        .error-message {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .error-message.show {
+        .complete-section.show {
             display: block;
         }
 
+        .complete-icon {
+            font-size: 4.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .complete-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 12px;
+        }
+
+        .complete-text {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+        }
+
+        .btn-view-result {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 6px 24px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-view-result:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(6, 182, 212, 0.6);
+            color: white;
+        }
+
+        /* Error Section */
+        .error-section {
+            display: none;
+            text-align: center;
+            padding: 32px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1.5px solid rgba(239, 68, 68, 0.3);
+            border-radius: 24px;
+            margin-top: 32px;
+        }
+
+        .error-section.show {
+            display: block;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 12px;
+        }
+
+        .error-text {
+            color: #fca5a5;
+            font-size: 1rem;
+            margin-bottom: 24px;
+        }
+
+        .btn-back {
+            padding: 14px 32px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            color: #e5e7eb;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
+            .glass-card {
+                padding: 32px 24px;
             }
 
-            .header {
-                padding: 1.5rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .processing-container {
-                padding: 1.5rem;
+            h1 {
+                font-size: 2.5rem;
             }
 
             .terminal-body {
-                height: 300px;
                 font-size: 0.8rem;
+                max-height: 300px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="main-container">
-        <!-- Header -->
-        <div class="header">
-            <h1><i class="fas fa-cogs me-3"></i>3D Model Processing</h1>
-            <div class="subtitle">AI-Powered 3D Generation in Progress</div>
-        </div>
+    <div class="container-main">
+        <div class="glass-card">
+            <div class="header-main">
+                <h1><i class="fas fa-cog fa-spin me-3" style="font-size: 0.9em;"></i>3D Model Processing</h1>
+                <p class="subtitle">AI-Powered 3D Generation in Progress</p>
+            </div>
 
-        <!-- Processing Content -->
-        <div class="processing-container">
-            <!-- Status Bar -->
-            <div class="status-bar">
+            <div class="status-section">
                 <div class="status-icon">
-                    <i class="fas fa-cogs" id="statusIcon"></i>
+                    <i class="fas fa-video"></i>
                 </div>
-                <div class="status-text" id="statusText">Initializing 3D Generation...</div>
-                <div class="status-subtext" id="statusSubtext">Please wait while we process your image</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar"></div>
+                <div class="status-text" id="statusText">Rendering 3D Views...</div>
+                <p class="status-subtext">Please wait while we process your image</p>
+
+                <div class="progress-container">
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Terminal -->
             <div class="terminal-container">
                 <div class="terminal-header">
                     <div class="terminal-dots">
-                        <div class="terminal-dot red"></div>
-                        <div class="terminal-dot yellow"></div>
-                        <div class="terminal-dot green"></div>
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
                     </div>
                     <div class="terminal-title">TripoSR Processing Terminal</div>
                 </div>
-                <div class="terminal-body" id="terminal">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">triposr@studio:~$</span>
-                        <span class="terminal-message">Starting 3D model generation...</span>
-                    </div>
-                </div>
+                <div class="terminal-body" id="terminal"></div>
             </div>
 
-            <!-- Completion Actions -->
-            <div class="completion-actions" id="completionActions">
-                <a href="#" class="btn btn-primary" id="viewResultBtn">
-                    <i class="fas fa-eye"></i>View 3D Model
-                </a>
-                <a href="/" class="btn btn-outline-secondary">
-                    <i class="fas fa-plus"></i>Create Another
+            <div class="complete-section" id="completeSection">
+                <i class="fas fa-check-circle complete-icon"></i>
+                <div class="complete-title">Processing Complete!</div>
+                <p class="complete-text">Your 3D model is ready to view</p>
+                <a href="#" id="viewResultBtn" class="btn-view-result">
+                    <i class="fas fa-cube me-2"></i>View 3D Model
                 </a>
             </div>
 
-            <!-- Error Message -->
-            <div class="error-message" id="errorMessage">
-                <strong>Processing Error:</strong>
-                <span id="errorText"></span>
+            <div class="error-section" id="errorSection">
+                <i class="fas fa-exclamation-triangle error-icon"></i>
+                <div class="error-title">Processing Failed</div>
+                <p class="error-text" id="errorMessage">An error occurred during processing</p>
+                <a href="/" class="btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                </a>
             </div>
         </div>
     </div>
 
     <script>
-        const sessionId = '{{ session_id }}';
         const terminal = document.getElementById('terminal');
-        const statusIcon = document.getElementById('statusIcon');
-        const statusText = document.getElementById('statusText');
-        const statusSubtext = document.getElementById('statusSubtext');
         const progressBar = document.getElementById('progressBar');
-        const completionActions = document.getElementById('completionActions');
-        const viewResultBtn = document.getElementById('viewResultBtn');
+        const statusText = document.getElementById('statusText');
+        const completeSection = document.getElementById('completeSection');
+        const errorSection = document.getElementById('errorSection');
         const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
+        const viewResultBtn = document.getElementById('viewResultBtn');
 
-        let progress = 0;
-        let lineCount = 1;
+        let eventSource;
+        let session_id = '{{ session_id }}';
 
         function addTerminalLine(message, timestamp) {
             const line = document.createElement('div');
             line.className = 'terminal-line';
-            line.innerHTML = `
-                <span class="terminal-timestamp">[${timestamp}]</span>
-                <span class="terminal-prompt">triposr@studio:~$</span>
-                <span class="terminal-message">${message}</span>
-            `;
 
+            const time = document.createElement('span');
+            time.className = 'terminal-timestamp';
+            time.textContent = `[${timestamp}]`;
+
+            const msg = document.createElement('span');
+            msg.textContent = ` ${message}`;
+
+            line.appendChild(time);
+            line.appendChild(msg);
             terminal.appendChild(line);
             terminal.scrollTop = terminal.scrollHeight;
-            lineCount++;
-
-            // Update progress based on key milestones
-            updateProgress(message);
         }
 
-        function updateProgress(message) {
-            if (message.includes('Processing uploaded image')) {
-                progress = 10;
-                statusText.textContent = 'Processing Image...';
-                statusIcon.className = 'fas fa-image';
-            } else if (message.includes('Removing background')) {
-                progress = 20;
-                statusText.textContent = 'Removing Background...';
-                statusIcon.className = 'fas fa-scissors';
-            } else if (message.includes('Initializing AI neural network')) {
-                progress = 30;
-                statusText.textContent = 'Loading AI Model...';
-                statusIcon.className = 'fas fa-brain';
-            } else if (message.includes('Generating 3D scene codes')) {
-                progress = 50;
-                statusText.textContent = 'Generating 3D Scene...';
-                statusIcon.className = 'fas fa-cube';
-            } else if (message.includes('Starting 3D rendering')) {
-                progress = 70;
-                statusText.textContent = 'Rendering 3D Views...';
-                statusIcon.className = 'fas fa-video';
-            } else if (message.includes('Extracting 3D mesh')) {
-                progress = 90;
-                statusText.textContent = 'Creating 3D Model...';
-                statusIcon.className = 'fas fa-hammer';
-            } else if (message.includes('completed successfully')) {
-                progress = 100;
-                statusText.textContent = 'Generation Complete!';
-                statusIcon.className = 'fas fa-check-circle';
-                statusIcon.style.color = 'var(--success-color)';
-            }
+        function connectToServer() {
+            eventSource = new EventSource(`/progress/${session_id}`);
 
-            progressBar.style.width = progress + '%';
+            eventSource.onmessage = function (event) {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.heartbeat) {
+                        return;
+                    }
+
+                    if (data.message) {
+                        addTerminalLine(data.message, data.timestamp || '00:00:00');
+                    }
+
+                    if (data.step && data.total_steps) {
+                        const percentage = Math.round((data.step / data.total_steps) * 100);
+                        progressBar.style.width = percentage + '%';
+                    }
+
+                    if (data.status === 'completed' && data.folder) {
+                        setTimeout(() => {
+                            statusText.textContent = 'Processing Complete!';
+                            progressBar.style.width = '100%';
+                            completeSection.classList.add('show');
+                            viewResultBtn.href = `/result/${data.folder}`;
+                            eventSource.close();
+                        }, 500);
+                    }
+
+                    if (data.status === 'failed') {
+                        statusText.textContent = 'Processing Failed';
+                        errorMessage.textContent = data.error || 'An error occurred during processing';
+                        errorSection.classList.add('show');
+                        eventSource.close();
+                    }
+                } catch (e) {
+                    console.error('Error parsing message:', e);
+                }
+            };
+
+            eventSource.onerror = function (error) {
+                console.error('EventSource error:', error);
+                setTimeout(connectToServer, 2000);
+            };
         }
 
-        function handleCompletion(data) {
-            if (data.status === 'completed') {
-                statusText.textContent = '🎉 3D Model Generated Successfully!';
-                statusSubtext.textContent = 'Your 3D model is ready to view';
-                statusIcon.className = 'fas fa-check-circle';
-                statusIcon.style.color = 'var(--success-color)';
-                progressBar.style.width = '100%';
-
-                viewResultBtn.href = `/result/${data.folder_id}`;
-                completionActions.classList.add('show');
-
-                // Add final terminal message
-                addTerminalLine(data.message, new Date().toLocaleTimeString());
-
-                // Auto-redirect after 3 seconds
-                setTimeout(() => {
-                    window.location.href = `/result/${data.folder_id}`;
-                }, 3000);
-
-            } else if (data.status === 'error') {
-                statusText.textContent = 'Processing Failed';
-                statusSubtext.textContent = 'An error occurred during processing';
-                statusIcon.className = 'fas fa-exclamation-triangle';
-                statusIcon.style.color = 'var(--danger-color)';
-
-                errorText.textContent = data.message;
-                errorMessage.classList.add('show');
-
-                addTerminalLine(data.message, new Date().toLocaleTimeString());
-            }
-        }
-
-        // Connect to Server-Sent Events
-        const eventSource = new EventSource(`/progress/${sessionId}`);
-
-        // Add initial welcome message
-        addTerminalLine('🚀 Initializing TripoSR processing system...', new Date().toLocaleTimeString());
-        addTerminalLine('📡 Connecting to processing server...', new Date().toLocaleTimeString());
-
-        eventSource.onopen = function (event) {
-            addTerminalLine('✅ Connection established successfully', new Date().toLocaleTimeString());
-            addTerminalLine('⏳ Waiting for processing to begin...', new Date().toLocaleTimeString());
-        };
-
-        eventSource.onmessage = function (event) {
-            console.log('Received SSE data:', event.data); // Debug logging
-            const data = JSON.parse(event.data);
-
-            if (data.status) {
-                // Processing completion or error
-                handleCompletion(data);
-                eventSource.close();
-            } else if (data.message && !data.heartbeat) {
-                // Progress update
-                addTerminalLine(data.message, data.timestamp);
-            } else if (data.heartbeat) {
-                console.log('Heartbeat received'); // Debug logging
-            }
-        };
-
-        eventSource.onerror = function (event) {
-            console.error('EventSource failed:', event);
-            addTerminalLine('❌ Connection to server lost', new Date().toLocaleTimeString());
-            addTerminalLine('🔄 Attempting to reconnect...', new Date().toLocaleTimeString());
-        };
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function () {
-            eventSource.close();
-        });
+        // Start connection
+        connectToServer();
     </script>
 </body>
 
