@@ -530,8 +530,12 @@
             terminal.scrollTop = terminal.scrollHeight;
         }
 
+        console.log('Session ID:', session_id);
+
         function connectToServer() {
-            eventSource = new EventSource(`/progress/${session_id}`);
+            const url = `/progress/${session_id}`;
+            console.log('Connecting to:', url);
+            eventSource = new EventSource(url);
 
             eventSource.onmessage = function (event) {
                 try {
