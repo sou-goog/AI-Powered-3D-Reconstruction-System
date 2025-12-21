@@ -674,8 +674,11 @@
         }
 
         uploadForm.addEventListener('submit', (e) => {
-            btnText.textContent = 'Reconstructing geometry…';
+            // Change text and icon
+            generateBtn.innerHTML = '<span><i class="fas fa-circle-notch fa-spin me-2"></i>Initializing AI pipeline...</span>';
             generateBtn.disabled = true;
+            generateBtn.style.opacity = '0.8';
+            generateBtn.style.cursor = 'wait';
         });
     </script>
 </body>
