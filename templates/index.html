@@ -369,6 +369,8 @@
             width: 100%;
             padding: 24px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-size: 200% auto;
+            /* For gradient animation */
             border: none;
             border-radius: 16px;
             color: white;
@@ -395,11 +397,9 @@
             transition: left 0.6s;
         }
 
-        .btn-generate:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
         .btn-generate:hover:not(:disabled) {
+            background-position: right center;
+            /* animate gradient */
             transform: translateY(-3px);
             box-shadow:
                 0 12px 36px rgba(6, 182, 212, 0.6),
@@ -579,7 +579,8 @@
                 </div>
 
                 <button type="submit" class="btn-generate" id="generateBtn" disabled>
-                    <span><i class="fas fa-magic me-2"></i><span id="btnText">Generate 3D Model</span></span>
+                    <span><i class="fas fa-magic me-2"></i><span id="btnText">Generate 3D Model</span> <i
+                            class="fas fa-arrow-right ms-2"></i></span>
                 </button>
             </form>
 
