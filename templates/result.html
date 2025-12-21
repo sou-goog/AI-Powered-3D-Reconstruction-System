@@ -1,603 +1,310 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>TripoSR Result - Professional 3D Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Result - Reconstruction Studio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --dark-color: #0f172a;
-            --light-bg: #f8fafc;
-            --white: #ffffff;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --border-radius: 12px;
-            --border-radius-lg: 16px;
-        }
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #06b6d4;
+            --secondary: #10b981;
+            --accent: #3b82f6;
+            --dark-bg: #0a0e1a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: var(--dark-color);
+            color: #f8fafc;
+            position: relative;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        /* Animated background orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            animation: float 25s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary), var(--accent));
+            top: -250px;
+            left: -250px;
+        }
+
+        body::after {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--secondary), var(--primary));
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 12s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(40px, -40px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
         }
 
         .main-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: var(--white);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Premium Glass Card */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
             overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 2rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            padding: 40px;
+            border-bottom: 1px solid var(--glass-border);
+            background: linear-gradient(to bottom, rgba(6, 182, 212, 0.05), transparent);
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.1;
-        }
-
-        .header h1 {
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
-            margin: 0;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .header .subtitle {
+        .subtitle {
+            color: #94a3b8;
             font-size: 1.1rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
-            font-weight: 400;
-            position: relative;
-            z-index: 1;
         }
 
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem;
-            background: var(--light-bg);
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .media-card {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
         }
 
         .media-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, 0.3);
         }
 
         .media-card-header {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .media-card-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--glass-border);
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 600;
-            color: var(--dark-color);
+            color: #e2e8f0;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 10px;
         }
 
         .media-card-body {
-            padding: 1.5rem;
+            padding: 20px;
         }
 
         .media-card img,
         .media-card video {
             width: 100%;
-            border-radius: 8px;
-            box-shadow: var(--shadow-sm);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
+        /* 3D Viewer */
         .viewer-section {
-            padding: 2rem;
-            background: var(--white);
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 0 30px 30px 30px;
         }
 
-        .section-header {
+        .viewer-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .section-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        .viewer-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
         }
 
         .obj-container {
+            height: 500px;
+            background: #0f131f;
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
             position: relative;
-            width: 100%;
-            height: 600px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            margin-bottom: 2rem;
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
 
         .obj-viewer {
             width: 100%;
             height: 100%;
-            border-radius: var(--border-radius);
         }
 
+        /* Controls */
+        .control-panel {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-control:hover {
+            background: rgba(6, 182, 212, 0.2);
+            border-color: rgba(6, 182, 212, 0.4);
+            color: #fff;
+        }
+
+        .btn-control.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Download Section */
+        .downloads {
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
+            color: white;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Loading Spinner */
         .spinner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(6, 182, 212, 0.3);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            z-index: 10;
         }
 
         @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
+            to {
                 transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .viewer-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-radius: var(--border-radius);
-        }
-
-        .placeholder-content {
-            text-align: center;
-            color: var(--secondary-color);
-        }
-
-        .placeholder-icon {
-            font-size: 5rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
-            opacity: 0.8;
-        }
-
-        .placeholder-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--dark-color);
-        }
-
-        .placeholder-text {
-            font-size: 1.1rem;
-            margin-bottom: 0;
-            opacity: 0.8;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.8;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.4;
-                transform: scale(1.05);
-            }
-        }
-
-        .control-panel {
-            background: var(--white);
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-        }
-
-        .control-tabs {
-            background: var(--light-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .control-tabs .nav-pills {
-            padding: 0.5rem;
-            gap: 0.25rem;
-        }
-
-        .control-tabs .nav-pills .nav-link {
-            background: transparent;
-            color: var(--secondary-color);
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
-        }
-
-        .control-tabs .nav-pills .nav-link:hover {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary-color);
-        }
-
-        .control-tabs .nav-pills .nav-link.active {
-            background: var(--primary-color);
-            color: var(--white);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .control-section {
-            background: var(--white);
-            padding: 1.5rem;
-        }
-
-        .form-check {
-            padding: 0.75rem;
-            background: var(--light-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-        }
-
-        .form-check:hover {
-            background: #f1f5f9;
-            border-color: var(--primary-color);
-        }
-
-        .form-check-input {
-            margin-top: 0.25rem;
-        }
-
-        .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .form-check-label {
-            font-weight: 500;
-            color: var(--dark-color);
-            cursor: pointer;
-        }
-
-        .btn {
-            font-weight: 500;
-            border-radius: 8px;
-            padding: 0.75rem 1.25rem;
-            transition: all 0.2s ease;
-            border-width: 2px;
-            font-size: 0.9rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-        }
-
-        .btn-outline-secondary {
-            color: var(--secondary-color);
-            border-color: var(--border-color);
-        }
-
-        .btn-outline-secondary:hover {
-            background: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: var(--white);
-        }
-
-        .btn-outline-warning {
-            color: var(--warning-color);
-            border-color: var(--warning-color);
-        }
-
-        .btn-outline-warning:hover {
-            background: var(--warning-color);
-            border-color: var(--warning-color);
-            color: var(--white);
-        }
-
-        .btn-outline-info {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-outline-info:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .rotation-grid .btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 0.75rem;
-            font-weight: 600;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0.75rem;
-            font-size: 0.95rem;
-        }
-
-        .downloads {
-            text-align: center;
-            padding: 2rem;
-            background: var(--light-bg);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .downloads a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-        }
-
-        .downloads a:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.4);
-            color: var(--white);
-            animation: buttonGlow 1.5s ease-in-out infinite;
-        }
-
-        @keyframes buttonGlow {
-
-            0%,
-            100% {
-                box-shadow: 0 10px 40px rgba(37, 99, 235, 0.4);
-            }
-
-            50% {
-                box-shadow: 0 15px 50px rgba(37, 99, 235, 0.6);
-            }
-        }
-
-        .btn-gallery {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.5rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #475569 100%);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-        }
-
-        .btn-gallery:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            color: var(--white);
-        }
-
-        .gallery-section {
-            padding: 2rem;
-            background: var(--light-bg);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .gallery-item {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-
-        .gallery-preview {
-            position: relative;
-            aspect-ratio: 1;
-            overflow: hidden;
-        }
-
-        .gallery-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover .gallery-preview img {
-            transform: scale(1.05);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(37, 99, 235, 0.9);
-            color: var(--white);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-weight: 600;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-overlay i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .gallery-info {
-            padding: 1rem;
-        }
-
-        .gallery-title {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-
-        .gallery-date {
-            color: var(--secondary-color);
-            font-size: 0.8rem;
-        }
-
-        .primary-rotation {
-            background: var(--light-bg);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .fine-rotation {
-            background: var(--light-bg);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        @media (max-width: 992px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                padding: 1.5rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .obj-container {
-                height: 400px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 1.5rem;
-            }
-
-            .header h1 {
-                font-size: 1.75rem;
-            }
-
-            .viewer-section {
-                padding: 1.5rem;
-            }
-
-            .obj-container {
-                height: 350px;
             }
         }
     </style>
@@ -605,446 +312,245 @@
 
 <body>
     <div class="main-container">
-        <!-- Professional Header -->
-        <div class="header">
-            <h1><i class="fas fa-cube me-3"></i>3D Reconstruction Studio</h1>
-            <div class="subtitle">Professional AI-Powered 3D Model Generation & Visualization</div>
-        </div>
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="header">
+                <h1>The Result</h1>
+                <p class="subtitle">AI-Generated 3D Reconstruction</p>
+            </div>
 
-        <!-- Media Content Grid -->
-        <div class="content-grid">
-            <div class="media-card">
-                <div class="media-card-header">
-                    <h3><i class="fas fa-image text-primary"></i>Processed Image</h3>
-                </div>
-                <div class="media-card-body">
-                    <img src="{{ url_for('output_files', folder=folder, filename='input.png') }}" alt="Processed Image">
-                </div>
-            </div>
-            <div class="media-card">
-                <div class="media-card-header">
-                    <h3><i class="fas fa-video text-success"></i>3D Animation</h3>
-                </div>
-                <div class="media-card-body">
-                    <video autoplay loop muted playsinline>
-                        <source src="{{ url_for('output_files', folder=folder, filename=video_file) }}"
-                            type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3D Viewer Section -->
-        <div class="viewer-section">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-cube text-primary"></i>
-                    Interactive 3D Viewer
-                </div>
-                <div class="viewer-stats">
-                    <span class="badge bg-primary me-2">Real-time Rendering</span>
-                    <span class="badge bg-success">WebGL Accelerated</span>
-                </div>
-            </div>
-            <div class="obj-container">
-                <div id="spinner" class="spinner"></div>
-                <div id="objViewer" class="obj-viewer">
-                    <div class="viewer-placeholder" id="viewerPlaceholder">
-                        <div class="placeholder-content">
-                            <i class="fas fa-cube placeholder-icon"></i>
-                            <h4 class="placeholder-title">Advanced 3D Viewer</h4>
-                            <p class="placeholder-text">Initializing WebGL renderer...</p>
-                        </div>
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Input Image -->
+                <div class="media-card">
+                    <div class="media-card-header">
+                        <i class="fas fa-image text-info"></i> Original Image
+                    </div>
+                    <div class="media-card-body">
+                        <img src="{{ url_for('output_files', folder=folder, filename='input.png') }}" alt="Input">
                     </div>
                 </div>
 
-                <!-- Enhanced Control Panel -->
-                <div class="control-panel" style="margin-top: 20px;">
-                    <div class="control-tabs">
-                        <ul class="nav nav-pills nav-fill" id="controlTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="view-tab" data-bs-toggle="pill"
-                                    data-bs-target="#view-panel" type="button" role="tab">
-                                    <i class="fas fa-eye me-2"></i>Viewing Controls
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="rotate-tab" data-bs-toggle="pill"
-                                    data-bs-target="#rotate-panel" type="button" role="tab">
-                                    <i class="fas fa-sync-alt me-2"></i>Rotation Tools
-                                </button>
-                            </li>
-                        </ul>
+                <!-- 3D Video -->
+                <div class="media-card">
+                    <div class="media-card-header">
+                        <i class="fas fa-film text-success"></i> 3D Preview
                     </div>
+                    <div class="media-card-body">
+                        <video autoplay loop muted playsinline>
+                            <source src="{{ url_for('output_files', folder=folder, filename=video_file) }}"
+                                type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="tab-content" id="controlTabsContent">
-                        <!-- View Controls -->
-                        <div class="tab-pane fade show active" id="view-panel" role="tabpanel">
-                            <div class="control-section">
-                                <div class="row g-3">
-                                    <div class="col-lg-6">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="wireframe"
-                                                onchange="toggleWireframe()">
-                                            <label class="form-check-label" for="wireframe">
-                                                <i class="fas fa-project-diagram me-2 text-primary"></i>Wireframe Mode
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="autoRotate"
-                                                onchange="toggleAutoRotate()" checked>
-                                            <label class="form-check-label" for="autoRotate">
-                                                <i class="fas fa-sync-alt me-2 text-success"></i>Auto Rotation
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row g-3 mt-2">
-                                    <div class="col-lg-6">
-                                        <button class="btn btn-outline-secondary w-100" onclick="resetCamera()">
-                                            <i class="fas fa-home me-2"></i>Reset Camera
-                                        </button>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <button class="btn btn-outline-warning w-100" onclick="standUpObject()">
-                                            <i class="fas fa-arrow-up me-2"></i>Orient Upright
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+            <!-- Interactive Viewer -->
+            <div class="viewer-section">
+                <div class="viewer-header">
+                    <div class="viewer-title"><i class="fas fa-cube me-2 text-primary"></i>Interactive 3D Model</div>
+                    <div>
+                        <button class="btn-control me-2" onclick="resetCamera()"><i class="fas fa-home me-1"></i>
+                            Reset</button>
+                        <button class="btn-control active" id="autoRotateBtn" onclick="toggleAutoRotate()"><i
+                                class="fas fa-sync me-1"></i> Auto-Rotate</button>
+                    </div>
+                </div>
+
+                <div class="obj-container">
+                    <div id="spinner" class="spinner"></div>
+                    <div id="objViewer" class="obj-viewer"></div>
+                </div>
+
+                <div class="control-panel">
+                    <div class="row g-3">
+                        <div class="col-md-6 d-flex gap-2">
+                            <button class="btn-control w-100" onclick="rotateObject('z', -0.2)">
+                                <i class="fas fa-undo"></i> Rotate Left
+                            </button>
+                            <button class="btn-control w-100" onclick="rotateObject('z', 0.2)">
+                                <i class="fas fa-redo"></i> Rotate Right
+                            </button>
                         </div>
-
-                        <!-- Rotation Controls -->
-                        <div class="tab-pane fade" id="rotate-panel" role="tabpanel">
-                            <div class="control-section">
-                                <div class="rotation-grid">
-                                    <div class="primary-rotation mb-4">
-                                        <label class="form-label">
-                                            <i class="fas fa-arrows-spin me-2 text-primary"></i>Primary Rotation
-                                            Controls
-                                        </label>
-                                        <div class="btn-group w-100" role="group">
-                                            <button class="btn btn-primary" onclick="rotateObject('z', -0.2)">
-                                                <i class="fas fa-undo me-1"></i> Rotate Left
-                                            </button>
-                                            <button class="btn btn-primary" onclick="rotateObject('z', 0.2)">
-                                                <i class="fas fa-redo me-1"></i> Rotate Right
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="fine-rotation">
-                                        <label class="form-label">Fine-Tuning Adjustments</label>
-                                        <div class="row g-2">
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-secondary btn-sm w-100"
-                                                    onclick="rotateObject('x', -0.1)" title="Rotate X-axis negative">
-                                                    <i class="fas fa-minus me-1"></i>X
-                                                </button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-secondary btn-sm w-100"
-                                                    onclick="rotateObject('y', -0.1)" title="Rotate Y-axis negative">
-                                                    <i class="fas fa-minus me-1"></i>Y
-                                                </button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-info btn-sm w-100" onclick="flipObject()"
-                                                    title="Flip 180°">
-                                                    <i class="fas fa-sync me-1"></i>Flip
-                                                </button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-secondary btn-sm w-100"
-                                                    onclick="rotateObject('x', 0.1)" title="Rotate X-axis positive">
-                                                    <i class="fas fa-plus me-1"></i>X
-                                                </button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-secondary btn-sm w-100"
-                                                    onclick="rotateObject('y', 0.1)" title="Rotate Y-axis positive">
-                                                    <i class="fas fa-plus me-1"></i>Y
-                                                </button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-outline-secondary btn-sm w-100"
-                                                    onclick="rotateObject('z', 0.1)" title="Rotate Z-axis positive">
-                                                    <i class="fas fa-plus me-1"></i>Z
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-md-6 d-flex gap-2">
+                            <button class="btn-control w-100" onclick="toggleWireframe()">
+                                <i class="fas fa-vector-square"></i> Wireframe
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Download Section -->
-        <div class="downloads">
-            <a href="{{ url_for('output_files', folder=folder, filename=obj_file) }}" download>
-                <i class="fas fa-download"></i>Download 3D Model (.obj)
-            </a>
-            <a href="{{ url_for('output_files', folder=folder, filename=stl_file) }}" download>
-                <i class="fas fa-download"></i>Download 3D Model (.stl)
-            </a>
-            <a href="{{ url_for('gallery') }}" class="btn-gallery">
-                <i class="fas fa-images"></i>View All Models
-            </a>
-        </div>
-
-        {% if previous_outputs %}
-        <!-- Previous Outputs Gallery -->
-        <div class="gallery-section">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-history text-secondary"></i>
-                    Recent Generations
-                </div>
-                <a href="{{ url_for('gallery') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-external-link-alt me-1"></i>View All
+            <!-- Downloads -->
+            <div class="downloads">
+                <a href="{{ url_for('output_files', folder=folder, filename=obj_file) }}" class="btn-download" download>
+                    <i class="fas fa-download"></i> Download OBJ
+                </a>
+                <a href="{{ url_for('output_files', folder=folder, filename=stl_file) }}" class="btn-download" download>
+                    <i class="fas fa-cube"></i> Download STL
+                </a>
+                <a href="{{ url_for('index') }}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Create New
                 </a>
             </div>
-            <div class="gallery-grid">
-                {% for output_folder in previous_outputs %}
-                <div class="gallery-item" onclick="viewModel('{{ output_folder }}')">
-                    <div class="gallery-preview">
-                        <img src="{{ url_for('output_files', folder=output_folder, filename='input.png') }}"
-                            alt="Model {{ output_folder }}" loading="lazy">
-                        <div class="gallery-overlay">
-                            <i class="fas fa-eye"></i>
-                            <span>View Model</span>
-                        </div>
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">Model #{{ output_folder[-6:] }}</div>
-                        <div class="gallery-date">{{ moment(output_folder).format('MMM DD, HH:mm') if moment else
-                            'Recent' }}</div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
         </div>
-        {% endif %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.155.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.155.0/examples/jsm/"
-            }
-        }
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        console.log('Starting Enhanced OBJ viewer initialization...');
+    <!-- Three.js Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-        let scene, camera, renderer, controls, currentObject;
-        let autoRotateEnabled = true;
-        let rotationSpeed = 0.005;
+    <script>
+        let scene, camera, renderer, controls, objModel;
+        let isAutoRotating = true;
+        let animationId;
 
-        const container = document.getElementById('objViewer');
-        const spinner = document.getElementById('spinner');
-        const placeholder = document.getElementById('viewerPlaceholder');
+        function init() {
+            const container = document.getElementById('objViewer');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
 
-        if (!container) {
-            console.error('Container element not found!');
-        } else {
-            initViewer();
-        }
-
-        function initViewer() {
-            console.log('Container found, initializing Enhanced Three.js...');
-
+            // Scene
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xf0f0f0);
+            scene.background = new THREE.Color(0x0f131f); // Dark background
 
-            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 0, 2);
+            // Camera
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 1.5, 3); // Slightly elevated view
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-            // Hide placeholder and add renderer
-            placeholder.style.display = 'none';
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
 
-            // Enhanced Lights
+            // Controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 2.0;
+
+            // Lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(5, 5, 5);
-            directionalLight.castShadow = true;
-            scene.add(directionalLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(2, 5, 2);
+            scene.add(dirLight);
 
-            const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.4);
-            scene.add(hemisphereLight);
+            const backLight = new THREE.DirectionalLight(0x445588, 0.5);
+            backLight.position.set(-2, 2, -5);
+            scene.add(backLight);
 
-            // Controls
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.1;
-            controls.autoRotate = autoRotateEnabled;
-            controls.autoRotateSpeed = 2.0;
-
-            loadOBJModel();
-            animate();
-        }
-
-        function loadOBJModel() {
+            // Load Model
+            const loader = new THREE.OBJLoader();
             const objUrl = "{{ url_for('output_files', folder=folder, filename=obj_file) }}";
-            console.log('Loading Enhanced OBJ from URL:', objUrl);
 
-            const loader = new OBJLoader();
             loader.load(
                 objUrl,
-                function (obj) {
-                    console.log('OBJ loaded successfully:', obj);
+                function (object) {
+                    objModel = object;
 
-                    // Remove existing object
-                    if (currentObject) {
-                        scene.remove(currentObject);
-                    }
+                    // Center object
+                    const box = new THREE.Box3().setFromObject(object);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
 
-                    // Add enhanced materials
-                    obj.traverse(function (child) {
-                        if (child instanceof THREE.Mesh) {
-                            if (!child.material) {
-                                child.material = new THREE.MeshPhongMaterial({
-                                    color: 0x888888,
-                                    shininess: 100,
-                                    specular: 0x222222
-                                });
-                            }
+                    // Normalize scale
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 1.5 / maxDim;
+                    object.scale.set(scale, scale, scale);
+
+                    // Center position
+                    object.position.x = -center.x * scale;
+                    object.position.y = -center.y * scale; // Adjust if needed
+                    object.position.z = -center.z * scale;
+
+                    // Material
+                    object.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.material = new THREE.MeshStandardMaterial({
+                                color: 0xcccccc,
+                                roughness: 0.5,
+                                metalness: 0.2
+                            });
                             child.castShadow = true;
                             child.receiveShadow = true;
                         }
                     });
 
-                    // Center & scale
-                    const box = new THREE.Box3().setFromObject(obj);
-                    const size = box.getSize(new THREE.Vector3());
-                    const maxAxis = Math.max(size.x, size.y, size.z);
-                    obj.scale.multiplyScalar(1.0 / maxAxis);
-                    box.setFromObject(obj);
-                    box.getCenter(obj.position).multiplyScalar(-1);
-
-                    currentObject = obj;
-                    scene.add(obj);
-                    spinner.style.display = 'none';
-                    console.log('Enhanced OBJ added to scene successfully');
+                    scene.add(object);
+                    document.getElementById('spinner').style.display = 'none';
+                    animate();
                 },
                 function (xhr) {
-                    const progress = (xhr.loaded / xhr.total * 100);
-                    console.log(progress + '% loaded');
+                    // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
                 },
                 function (error) {
-                    console.error('Error loading OBJ:', error);
-                    spinner.style.display = 'none';
-                    placeholder.style.display = 'flex';
-                    placeholder.querySelector('.placeholder-text').textContent = 'Error loading 3D model';
+                    console.error('An error happened', error);
+                    document.getElementById('spinner').style.display = 'none';
+                    container.innerHTML = '<div class="text-center text-white mt-5">Error loading 3D model</div>';
                 }
             );
+
+            // Resize handle
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('objViewer');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
         }
 
         function animate() {
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
             controls.update();
             renderer.render(scene, camera);
         }
 
-        // Enhanced Control Functions - Make them global
-        window.toggleWireframe = function () {
-            if (currentObject) {
-                currentObject.traverse(function (child) {
-                    if (child instanceof THREE.Mesh) {
-                        child.material.wireframe = !child.material.wireframe;
+        // Controls
+        function resetCamera() {
+            camera.position.set(0, 1.5, 3);
+            camera.lookAt(0, 0, 0);
+            controls.target.set(0, 0, 0);
+            controls.update();
+        }
+
+        function toggleAutoRotate() {
+            controls.autoRotate = !controls.autoRotate;
+            const btn = document.getElementById('autoRotateBtn');
+            if (controls.autoRotate) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function rotateObject(axis, angle) {
+            if (objModel) {
+                // Rotate the group or the object itself
+                // Since OrbitControls rotates camera, to rotate object we modify rotation
+                objModel.rotation[axis] += angle;
+            }
+        }
+
+        let wireframeMode = false;
+        function toggleWireframe() {
+            wireframeMode = !wireframeMode;
+            if (objModel) {
+                objModel.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.material.wireframe = wireframeMode;
                     }
                 });
             }
         }
 
-        window.toggleAutoRotate = function () {
-            autoRotateEnabled = !autoRotateEnabled;
-            controls.autoRotate = autoRotateEnabled;
-        }
-
-        window.resetCamera = function () {
-            camera.position.set(0, 0, 2);
-            controls.reset();
-        }
-
-        window.standUpObject = function () {
-            if (currentObject) {
-                currentObject.rotation.set(0, 0, 0);
-            }
-        }
-
-        window.rotateObject = function (axis, angle) {
-            if (currentObject) {
-                switch (axis) {
-                    case 'x':
-                        currentObject.rotation.x += angle;
-                        break;
-                    case 'y':
-                        currentObject.rotation.y += angle;
-                        break;
-                    case 'z':
-                        currentObject.rotation.z += angle;
-                        break;
-                }
-            }
-        }
-
-        window.flipObject = function () {
-            if (currentObject) {
-                currentObject.rotation.y += Math.PI;
-            }
-        }
-
-        // Keyboard controls
-        document.addEventListener('keydown', function (event) {
-            switch (event.code) {
-                case 'ArrowLeft':
-                    window.rotateObject('z', -0.1);
-                    break;
-                case 'ArrowRight':
-                    window.rotateObject('z', 0.1);
-                    break;
-                case 'Space':
-                    event.preventDefault();
-                    window.toggleAutoRotate();
-                    document.getElementById('autoRotate').checked = autoRotateEnabled;
-                    break;
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            if (camera && renderer) {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            }
-        });
-
-        console.log('Enhanced OBJ viewer initialization complete');
-
-        // Gallery functionality
-        window.viewModel = function (folderId) {
-            window.location.href = `/result/${folderId}`;
-        }
+        init();
     </script>
 </body>
 
