@@ -113,15 +113,17 @@
         /* Header */
         .header-main {
             text-align: center;
-            margin-bottom: 52px;
+            margin-bottom: 25px;
+            /* Compact margin */
         }
 
         h1 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 4.2rem;
+            font-size: 2.4rem;
+            /* Smaller font */
             font-weight: 700;
-            line-height: 1.05;
-            margin-bottom: 18px;
+            line-height: 1.1;
+            margin-bottom: 8px;
             background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -162,8 +164,11 @@
         .upload-zone {
             position: relative;
             border: 2.5px dashed rgba(6, 182, 212, 0.35);
-            border-radius: 28px;
-            padding: 70px 50px;
+            border-radius: 24px;
+            padding: 30px 40px;
+            /* Compact padding */
+            min-height: 180px;
+            /* Shorter height */
             text-align: center;
             background: linear-gradient(135deg,
                     rgba(6, 182, 212, 0.06) 0%,
@@ -215,12 +220,13 @@
         }
 
         .upload-icon {
-            font-size: 5.5rem;
+            font-size: 3.5rem;
+            /* Smaller icon */
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 26px;
+            margin-bottom: 15px;
             transition: transform 0.3s ease;
             display: inline-block;
             filter: drop-shadow(0 4px 8px rgba(6, 182, 212, 0.3));
@@ -424,70 +430,70 @@
             z-index: 1;
         }
 
-        /* Gallery Link */
-        .gallery-link {
-            text-align: center;
-            margin: 36px 0;
-        }
-
-        .gallery-link a {
-            color: #9ca3af;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
+        .btn-gallery {
+            width: 100%;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            /* Glass secondary */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: #e5e7eb;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            height: 100%;
+            /* Match height of generate button if flexed */
         }
 
-        .gallery-link a:hover {
-            color: var(--primary);
-            gap: 14px;
-            background: rgba(6, 182, 212, 0.12);
-            border-color: rgba(6, 182, 212, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        .btn-gallery:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(6, 182, 212, 0.5);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         /* Features Section */
         .features {
-            margin-top: 44px;
-            padding-top: 44px;
+            margin-top: 30px;
+            padding-top: 25px;
             border-top: 1.5px solid rgba(255, 255, 255, 0.12);
         }
 
         .features-title {
             text-align: center;
             color: #6b7280;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2.5px;
-            margin-bottom: 36px;
+            margin-bottom: 20px;
             font-weight: 600;
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 20px;
         }
 
         .feature-item {
             text-align: center;
-            padding: 28px 20px;
+            padding: 18px 15px;
+            /* Compact padding */
             background: linear-gradient(135deg,
                     rgba(255, 255, 255, 0.05) 0%,
                     rgba(255, 255, 255, 0.02) 100%);
-            border-radius: 20px;
+            border-radius: 16px;
             border: 1.5px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s ease;
             backdrop-filter: blur(10px);
         }
+
 
         .feature-item:hover {
             background: linear-gradient(135deg,
@@ -509,12 +515,13 @@
         }
 
         .feature-icon {
-            font-size: 2.8rem;
+            font-size: 1.8rem;
+            /* Compact icon */
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 18px;
+            margin-bottom: 12px;
             filter: drop-shadow(0 2px 4px rgba(6, 182, 212, 0.3));
         }
 
@@ -590,39 +597,35 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-generate" id="generateBtn" disabled>
-                    <span><i class="fas fa-magic me-2"></i><span id="btnText">Generate 3D Model</span> <i
-                            class="fas fa-arrow-right ms-2"></i></span>
-                </button>
-            </form>
 
-            <!-- Gallery Link Below Button -->
-            <div class="gallery-link">
-                <a href="/gallery">
-                    <i class="fas fa-images"></i>
-                    View Gallery
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
 
-            <!-- Features Below Gallery Link -->
-            <div class="features">
-                <div class="features-title">Features</div>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-image"></i></div>
-                        <div class="feature-text">Upload Image</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-brain"></i></div>
-                        <div class="feature-text">AI Processing</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="fas fa-cube"></i></div>
-                        <div class="feature-text">Interactive 3D</div>
+                <!-- Gallery Link Below Button -->
+                <div class="gallery-link">
+                    <a href="/gallery">
+                        <i class="fas fa-images"></i>
+                        View Gallery
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Features Below Gallery Link -->
+                <div class="features">
+                    <div class="features-title">Features</div>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-image"></i></div>
+                            <div class="feature-text">Upload Image</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                            <div class="feature-text">AI Processing</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-cube"></i></div>
+                            <div class="feature-text">Interactive 3D</div>
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
