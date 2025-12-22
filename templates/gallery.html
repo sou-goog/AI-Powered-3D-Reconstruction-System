@@ -97,50 +97,63 @@
             margin-bottom: var(--spacing-lg);
         }
 
-        /* Top Navigation */
-        .top-nav {
+        /* Top Navigation - Glass Redesign */
+        .glass-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
         }
 
-        .breadcrumb {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin: 0;
+        .glass-nav:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .breadcrumb a {
-            color: #06b6d4;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .breadcrumb a:hover {
-            color: #10b981;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
+        .breadcrumb-container {
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: rgba(6, 182, 212, 0.08);
-            border: 1px solid var(--secondary-cyan);
-            border-radius: 12px;
-            color: #94a3b8;
+            font-size: 0.95rem;
         }
+
+        .breadcrumb-link {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .breadcrumb-link:hover {
+            color: #e2e8f0;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .breadcrumb-separator {
+            color: #475569;
+            margin: 0 12px;
+            font-size: 0.8rem;
+        }
+
+        .breadcrumb-current {
+            color: #06b6d4;
+            font-weight: 600;
+            background: rgba(6, 182, 212, 0.1);
+            padding: 6px 16px;
+            border-radius: 100px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+        }
+
 
         .stat-value {
             color: #06b6d4;
@@ -345,12 +358,18 @@
                 <p class="subtitle">Browse Your Generated 3D Models</p>
             </div>
 
-            <div class="top-nav">
-                <div class="breadcrumb">
-                    <a href="/"><i class="fas fa-home me-1"></i>Home</a> / Gallery
+            <div class="glass-nav">
+                <div class="breadcrumb-container">
+                    <a href="/" class="breadcrumb-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <i class="fas fa-chevron-right breadcrumb-separator"></i>
+                    <span class="breadcrumb-current">Gallery</span>
                 </div>
-                <a href="/" class="btn btn-primary">
-                    <i class="fas fa-plus"></i>Create New Model
+                <a href="/" class="btn btn-primary" style="padding: 10px 24px; border-radius: 12px;">
+                    <i class="fas fa-plus"></i>
+                    <span>Create New Model</span>
                 </a>
             </div>
 
