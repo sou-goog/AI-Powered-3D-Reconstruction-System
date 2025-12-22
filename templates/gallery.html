@@ -391,8 +391,9 @@
                                 onclick="event.stopPropagation(); viewModel('{{ output.id }}')">
                                 <i class="fas fa-eye"></i>View
                             </button>
-                            class="btn btn-secondary" download onclick="event.stopPropagation();">
-                            <i class="fas fa-download"></i>Download
+                            <a href="{{ url_for('output_files', folder=output.id, filename='mesh.obj') }}"
+                                class="btn btn-secondary" download onclick="event.stopPropagation();">
+                                <i class="fas fa-download"></i>Download
                             </a>
                             <button class="btn btn-danger"
                                 onclick="event.stopPropagation(); deleteModel('{{ output.id }}')">
