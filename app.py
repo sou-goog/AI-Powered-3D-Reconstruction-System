@@ -8,6 +8,7 @@ import rembg
 import json
 import threading
 from queue import Queue
+import shutil
 
 # Import trimesh for STL conversion
 import trimesh
@@ -318,6 +319,23 @@ def result(folder):
 @app.route("/output/<folder>/<filename>")
 def output_files(folder, filename):
     return send_from_directory(os.path.join(app.config['OUTPUT_FOLDER'], folder), filename)
+
+@app.route("/delete_result/<folder>", methods=["POST"])
+def delete_result(folder):
+    """Delete a generated model folder"""
+    if not folder:
+        return json.dumps({'success': False, 'error': 'No folder specified'}), 400, {'ContentType': 'application/json'}
+    
+    try:
+        folder_path = os.path.join(app.config['OUTPUT_FOLDER'], folder)
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            shutil.rmtree(folder_path)
+            return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+        else:
+            return json.dumps({'success': False, 'error': 'Folder not found'}), 404, {'ContentType': 'application/json'}
+    except Exception as e:
+        return json.dumps({'success': False, 'error': str(e)}), 500, {'ContentType': 'application/json'}
+
 
 @app.route("/gallery")
 def gallery():
