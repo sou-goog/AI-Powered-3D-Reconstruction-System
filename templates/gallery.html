@@ -97,6 +97,23 @@
             margin-bottom: var(--spacing-lg);
         }
 
+        .stat-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            /* Clean glass */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            /* Pill shape */
+            color: #e2e8f0;
+            /* Bright text */
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+
         /* Top Navigation - Glass Redesign */
         .glass-nav {
             display: flex;
@@ -402,15 +419,12 @@
 
             {% if outputs %}
             <!-- Stats -->
+            <!-- Stats -->
             <div class="stats-bar">
                 <div class="stat-item">
-                    <i class="fas fa-cube"></i>
-                    <span>Total Models:</span>
-                    <span class="stat-value">{{ outputs|length }}</span>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-download"></i>
-                    <span>Ready to Download</span>
+                    <i class="fas fa-cube" style="color: #06b6d4;"></i>
+                    <span>Total Models Generated:</span>
+                    <span class="stat-value" style="color: white;">{{ outputs|length }}</span>
                 </div>
             </div>
 
