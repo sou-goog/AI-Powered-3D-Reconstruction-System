@@ -586,9 +586,9 @@
                     object.traverse(function (child) {
                         if (child.isMesh) {
                             child.material = new THREE.MeshStandardMaterial({
-                                color: 0xcccccc,
+                                vertexColors: true, // Enable vertex colors
                                 roughness: 0.5,
-                                metalness: 0.2
+                                metalness: 0.1
                             });
                             child.castShadow = true;
                             child.receiveShadow = true;

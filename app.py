@@ -152,8 +152,9 @@ def process_image_async(upload_path, session_id):
 
         # Export mesh
         timer.start("Exporting mesh")
-        timer.log_progress("🏗️ Extracting 3D mesh geometry...", step=10, total_steps=10)
-        meshes = model.extract_mesh(scene_codes, resolution=128, has_vertex_color=False)  # Faster with 128
+        timer.log_progress("🏗️ Extracting high-quality 3D mesh...", step=10, total_steps=10)
+        # Increased resolution to 256 for better detail and enabled vertex colors
+        meshes = model.extract_mesh(scene_codes, resolution=256, has_vertex_color=True)
         mesh_file = os.path.join(image_dir, "mesh.obj")
         meshes[0].export(mesh_file)
         timer.log_progress("📦 OBJ file exported successfully")
